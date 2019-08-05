@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "428356700246",
+    "firebase_url": "https://alcphase2challenge.firebaseio.com",
+    "project_id": "alcphase2challenge",
+    "storage_bucket": "alcphase2challenge.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428356700246:android:81497647979b60e8",
+        "android_client_info": {
+          "package_name": "com.example.alcphase2challenge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428356700246-19c2ivd77vqrh5tesvf1in5f38nfn86d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.alcphase2challenge",
+            "certificate_hash": "cec29a54c422991f20900608f23e680fc333191b"
+          }
+        },
+        {
+          "client_id": "428356700246-5frn6gqc43jbe1v2k5vaqbbm0e1te8c9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEKa9VUHW4Ll38_FzM6hqrFpG7WElrBOs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "428356700246-5frn6gqc43jbe1v2k5vaqbbm0e1te8c9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
