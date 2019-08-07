@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,6 +13,11 @@ import com.example.alcphase2challenge.databinding.ActivityUserBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -27,12 +33,16 @@ public class UserActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
     ArrayList<TravelModel> travelModelArrayList;
     TravelAdapter travelAdapter;
-
+    private DatabaseReference databaseReference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user);
         travelModelArrayList = new ArrayList<>();
+        // Setting up Firebase image upload folder path in databaseReference.
+// The path is already defined in MainActivity.
+        databaseReference = FirebaseDatabase.getInstance().getReference("images");
+
         setUpRecycler();
         setUpFirebase();
         loadDataFromDataBase();
@@ -50,7 +60,6 @@ private void changeListener(){
                         Log.w("TAG", "listen:error", e);
                         return;
                     }
-
                     for (DocumentChange dc : Objects.requireNonNull(snapshots).getDocumentChanges()) {
                         switch (dc.getType()) {
                             case ADDED:
@@ -75,13 +84,8 @@ private void changeListener(){
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 for (DocumentSnapshot documentSnapshot : task.getResult()) {
-
-                    TravelModel travelModel = new TravelModel(
-                            documentSnapshot.getString("country"),
-                            documentSnapshot.getString("holidayLocation"),
-                    documentSnapshot.getString("amount"));
-                            travelModelArrayList.add(travelModel);
-
+                    TravelModel travelModel = documentSnapshot.toObject(TravelModel.class);
+                    travelModelArrayList.add(travelModel);
                 }
                 travelAdapter = new TravelAdapter(UserActivity.this, travelModelArrayList);
                 binding.recycler.setAdapter(travelAdapter);

@@ -13,26 +13,39 @@
         tools:context=".SignUpActivity"
         android:background="@color/darkMode">
 
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:textColor="@color/whiteColor"
-            android:id="@+id/country"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:backgroundTint="@color/lightMilk"
-            android:hint="Country"
-            android:textColorHint="#E1E1E1"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="Add A Holiday Destination"
+            android:textColor="@color/colorGreen"
+            android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="@color/lightMilk"
+            android:hint="Country"
+            android:inputType="textCapSentences"
+            android:textColor="@color/whiteColor"
+            android:textColorHint="#E1E1E1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:inputType="textCapSentences"
             android:textColor="@color/whiteColor"
             android:id="@+id/holidayLocation"
             android:layout_width="match_parent"
@@ -51,6 +64,7 @@
             app:layout_constraintTop_toBottomOf="@+id/country" />
 
         <androidx.appcompat.widget.AppCompatEditText
+            android:inputType="number"
             android:textColor="@color/whiteColor"
             android:id="@+id/amount"
             android:layout_width="match_parent"
@@ -69,39 +83,49 @@
             app:layout_constraintTop_toBottomOf="@+id/holidayLocation" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:padding="8dp"
             android:id="@+id/selectImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:background="@drawable/buttton_curves"
+            android:padding="8dp"
             android:text="Select image"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/amount" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:scaleType="centerCrop"
+            android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp"
+            android:background="#3CE1E1E1"
+            android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/selectImage"
-            app:layout_constraintVertical_bias="0.064" />
+            app:layout_constraintTop_toBottomOf="@+id/displayHere"
+            app:layout_constraintVertical_bias="0.194" />
 
+        <TextView
+            android:id="@+id/displayHere"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Image Will Display Below"
+            android:textColor="@color/colorGreen"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectImage" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

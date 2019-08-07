@@ -18,14 +18,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.alcphase2challenge.databinding.ActivityAdminBinding;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -33,6 +37,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 public class AdminActivity extends AppCompatActivity {
     private static final String TAG = "Tag";
@@ -45,72 +50,56 @@ public class AdminActivity extends AppCompatActivity {
     //Firebase
     FirebaseStorage storage;
     StorageReference storageReference;
+    public static final String Database_Path = "images";
+    private DatabaseReference databaseReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_admin);
         db = FirebaseFirestore.getInstance();
-
         binding.selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showFileChooser();
             }
         });
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference(Database_Path);
+
         binding.getRoot();
     }
 
-//    private void uploadFile() {
-//        //checking if file is available
-//        if (filePath != null) {
-//            //displaying progress dialog while image is uploading
-//            final ProgressDialog progressDialog = new ProgressDialog(this);
-//            progressDialog.setTitle("Uploading");
-//            progressDialog.show();
-//
-//            //getting the storage reference
-//            StorageReference sRef = storageReference.child(SyncStateContract.Constants.STORAGE_PATH_UPLOADS + System.currentTimeMillis() + "." + getFileExtension(filePath));
-//
-//            //adding the file to reference
-//            sRef.putFile(filePath)
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            //dismissing the progress dialog
-//                            progressDialog.dismiss();
-//
-//                            //displaying success toast
-//                            Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
-//
-//                            //creating the upload object to store uploaded image details
-//                            Upload upload = new Upload(editTextName.getText().toString().trim(), taskSnapshot.getDownloadUrl().toString());
-//
-//                            //adding an upload to firebase database
-//                            String uploadId = mDatabase.push().getKey();
-//                            mDatabase.child(uploadId).setValue(upload);
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception exception) {
-//                            progressDialog.dismiss();
-//                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
-//                        }
-//                    })
-//                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-//                            //displaying the upload progress
-//                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-//                            progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
-//                        }
-//                    });
-//        } else {
-//            //display an error if no file is selected
-//        }
-//    }
+    private void uploadImage() {
+        final StorageReference ref = storageReference.child("images/" + UUID.randomUUID().toString());
 
+        if (filePath != null) {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+            ref.putFile(filePath)
+                    .continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            return ref.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
 
+                    String country = binding.country.getText().toString();
+                    String holidayLocation = binding.holidayLocation.getText().toString();
+                    String amount = binding.amount.getText().toString();
+                    TravelModel travelModel = new TravelModel(country, holidayLocation, amount);
+                    Log.e("country", task.getResult().toString() + "---------------------");
+                    travelModel.setImageURL(task.getResult().toString());
+                    addHoliday(travelModel);
+                }
+            });
+        }
+
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -133,11 +122,15 @@ public class AdminActivity extends AppCompatActivity {
     }
 
     public void addHoliday(TravelModel travelModel) {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Uploading...");
+        progressDialog.show();
         db.collection("Holidays")
                 .add(travelModel)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
+                        progressDialog.dismiss();
                         Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
                         Intent intent = new Intent(AdminActivity.this, UserActivity.class);
                         startActivity(intent);
@@ -146,6 +139,7 @@ public class AdminActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
                         Log.w(TAG, "Error adding document", e);
                     }
                 });
@@ -163,13 +157,7 @@ public class AdminActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_save:
-                String country = binding.country.getText().toString();
-                String holidayLocation = binding.holidayLocation.getText().toString();
-                String amount = binding.amount.getText().toString();
-//                Upload upload = new Upload(binding.imageView.getText().toString().trim(), taskSnapshot.getDownloadUrl().toString());
-
-                TravelModel travelModel = new TravelModel(country, holidayLocation, amount);
-                addHoliday(travelModel);
+                uploadImage();
                 return true;
             default:
                 break;

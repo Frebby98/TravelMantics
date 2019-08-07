@@ -37,14 +37,20 @@ public class SignUpActivity extends AppCompatActivity {
 // Initialize Firebase Auth
         FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
-        binding.signUpButton.setOnClickListener(new View.OnClickListener() {
+        binding.signInText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setErrorNull();
 registerUser();
             }
         });
+        binding.signInText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignUpActivity.this, AuthenticationActivity.class));
 
+            }
+        });
         binding.getRoot();
 
     }
@@ -59,9 +65,9 @@ registerUser();
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                Toast.makeText(SignUpActivity.this, "Authentication Success.",
+                                Toast.makeText(SignUpActivity.this, "Registration Successful.",
                                         Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(SignUpActivity.this, AuthenticationActivity.class);
+                                Intent intent = new Intent(SignUpActivity.this, AdminActivity.class);
                                 intent.putExtra("email", email);
                                 intent.putExtra("password", password);
                                 startActivity(intent);

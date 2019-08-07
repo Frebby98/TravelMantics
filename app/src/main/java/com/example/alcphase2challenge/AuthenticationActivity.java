@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -63,6 +64,12 @@ public class AuthenticationActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, 101);
             }
         });
+        binding.signUpText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AuthenticationActivity.this, SignUpActivity.class));
+            }
+        });
     }
 
     private void emailSignIn() {
@@ -80,13 +87,17 @@ public class AuthenticationActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        final ProgressDialog progressDialog = new ProgressDialog(AuthenticationActivity.this);
+        progressDialog.setTitle("Uploading...");
+        progressDialog.show();
         if (requestCode == RC_SIGN_IN) {
+            progressDialog.dismiss();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             Intent intent = new Intent(AuthenticationActivity.this, AdminActivity.class);
             startActivity(intent);
         }
             if (resultCode == Activity.RESULT_OK) {
+                progressDialog.dismiss();
                 // Successfully signed in
                 switch (requestCode) {
                     case 101:

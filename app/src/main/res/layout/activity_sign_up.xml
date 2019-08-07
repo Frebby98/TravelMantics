@@ -18,18 +18,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="152dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:text="REGISTRATION"
-            android:textColor="#fff"
+            android:textColor="@color/colorGreen"
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatEditText
+            android:inputType="textCapSentences"
             android:id="@+id/firstAndLastNameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,6 +47,7 @@
 
 
         <androidx.appcompat.widget.AppCompatEditText
+            android:inputType="textCapSentences"
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -65,6 +65,7 @@
             app:layout_constraintTop_toBottomOf="@+id/firstAndLastNameEditText" />
 
         <androidx.appcompat.widget.AppCompatEditText
+            android:inputType="textCapSentences"
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -113,7 +114,6 @@
             app:layout_constraintTop_toBottomOf="@+id/signUpButton">
 
             <TextView
-                android:textStyle="italic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Already Registered?"
@@ -121,11 +121,11 @@
 
             <TextView
                 android:id="@+id/signInText"
-                android:textStyle="bold"
+                android:textColor="@color/colorGreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" Sign In"
-                android:textColor="@color/lightMilk" />
+                android:textStyle="bold|italic" />
 
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
